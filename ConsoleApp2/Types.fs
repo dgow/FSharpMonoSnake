@@ -11,10 +11,13 @@ type Direction = Point
 type Move =
     | Normal of Direction
     | Eat of Direction
-    | Outside
-    | Still
 
 type Body =
     | Hungry of Point list
     | FedUp of Point list
-    
+
+type Fail =
+    | NoInput
+    | Outside
+
+type M = Result<Move, Fail>

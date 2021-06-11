@@ -54,25 +54,23 @@ let main _ =
                 async {
                     let! nextState = game.LoopAsync
                     let keyboardState = Keyboard.GetState()
-
+                    let repeatLoop = gameLoop keyboardState itemPos body
+                    let nextLoopWithMove = gameLoop keyboardState itemPos
+                    
                     match nextState with
                     | Update time ->
+                        
                         let movedBody =
                             DirectionFromKeyboard keyboardState lastKeyBoardState
-//                            |> ValidateDir 
-                            |> MakeMove body itemPos 
-                            |> ApplyMove body
-                                
-                                
-                        let dir = DirectionFromKeyboard keyboardState lastKeyBoardState
-                        let v = ValidateDir dir body
-                                
+                            |> GameLogic.MakeMove itemPos body
+
                         match movedBody with
-                            | Hungry newBody  ->
-                                return! gameLoop keyboardState itemPos newBody
-                            | FedUp newBody -> 
+                            | Some (FedUp newBody) -> 
                                 return! gameLoop keyboardState (Item.createItem ()) newBody
-                                
+                            | Some (Hungry newBody)  ->
+                               return! nextLoopWithMove newBody
+                            | None -> return! repeatLoop
+                            
                     | Draw time ->
                         do game.GraphicsDevice.Clear Color.CornflowerBlue
                         spriteBatch.Begin()
@@ -83,7 +81,7 @@ let main _ =
 
                         spriteBatch.End()
 
-                        return! gameLoop keyboardState itemPos body
+                        return! repeatLoop
                 }
 
 

@@ -24,28 +24,29 @@ let DirectionFromKeyboard (keyState: KeyboardState) (lastState: KeyboardState) =
     |> Seq.filter (fun x -> lastState.IsKeyUp(x.Key))
     |> Seq.sumBy (fun x -> x.Value)
 
-let ValidateDir (dir:Point) body : Move =
-    let playerPos = List.head body
-    let valid =
-        Drawer.field.Contains(playerPos + dir)
-    match valid with
-    | true -> Normal dir
-    | false -> Outside
-//    
-
-let MakeMove body itemPos dir  =
-    let buttonPressed = dir <> Point.Zero
-    let itemEaten = List.head body + dir = itemPos
-
-    match buttonPressed, itemEaten with
-    | true, true -> Eat dir
-    | true, false -> Normal dir
-    | false, _ -> Still
-
 let ApplyMove body move =
     let playerPos = List.head body
+    let move = match move with
+                | Normal dir -> Hungry(playerPos + dir :: rmOneTail body)
+                | Eat dir -> FedUp(playerPos + dir :: body)
+    Some move
 
-    match move with
-    | Normal dir -> Hungry(playerPos + dir :: rmOneTail body)
-    | Eat dir -> FedUp(playerPos + dir :: body)
-    | Still -> Hungry body
+let CheckInputExists (dir: Point) =
+    match dir with
+    | x when x = Point.Zero -> None
+    | _ -> Some dir
+
+let CheckInsideField body (dir:Point) =
+    let playerPos = List.head body
+    let isInsideField = Drawer.field.Contains(playerPos + dir)
+    
+    match isInsideField with
+    | false -> None
+    | true -> Some dir
+
+let CreateMove body itemPos dir =
+    let itemEaten = List.head body + dir = itemPos
+
+    match itemEaten with
+    | false -> Some(Normal dir)
+    | true -> Some(Eat dir)
