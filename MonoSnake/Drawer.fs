@@ -1,7 +1,6 @@
 module Drawer
 
 open Microsoft.Xna.Framework
-open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Graphics
 
 let rectSize = 50

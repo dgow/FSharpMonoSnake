@@ -12,6 +12,8 @@
         <Compile Include="Input.fs" />
         <Compile Include="Item.fs" />
         <Compile Include="GameLogic.fs" />
+        <Compile Include="Engine.fs" />
+        <Compile Include="GameWorkflow.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

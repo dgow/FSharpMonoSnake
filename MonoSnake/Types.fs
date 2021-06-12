@@ -1,9 +1,15 @@
 module Types
 
 open Microsoft.Xna.Framework
+open Microsoft.Xna.Framework.Input
+
+type GameLoopData = {
+    time:GameTime
+    keyboard:KeyboardState
+}
 
 type LoopState =
-    | Update of GameTime
+    | Update of GameLoopData
     | Draw of GameTime
 
 type Direction = Point

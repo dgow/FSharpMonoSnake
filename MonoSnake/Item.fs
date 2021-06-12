@@ -1,4 +1,4 @@
-module ConsoleApp2.Item
+module Item
 
 open Microsoft.Xna.Framework
 
