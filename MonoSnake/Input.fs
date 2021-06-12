@@ -43,7 +43,7 @@ let CheckInsideField (playerNextPos : Point) =
     | true -> Ok playerNextPos
 
 let CheckHitOwnBody body (playerNextPos:Point)=
-    let hitBody = List.contains playerNextPos body 
+    let hitBody = List.contains playerNextPos (rmOneTail body) 
     match hitBody with
     | true -> Error HitBody
     | false -> Ok playerNextPos
