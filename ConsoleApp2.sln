@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.fsproj", "{D8F96C3F-29E1-4577-9311-F0A1DFBAADB0}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MonoSnake", "MonoSnake\MonoSnake.fsproj", "{D8F96C3F-29E1-4577-9311-F0A1DFBAADB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
