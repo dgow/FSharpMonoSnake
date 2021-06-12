@@ -2,8 +2,6 @@ module Input
 
 //#r "C:\\Users\\Johann\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\lib\\net452\\MonoGame.Framework.dll"
 
-
-
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
 
@@ -25,28 +23,33 @@ let DirectionFromKeyboard (keyState: KeyboardState) (lastState: KeyboardState) =
     |> Seq.sumBy (fun x -> x.Value)
 
 let ApplyMove body move =
-    let playerPos = List.head body
     let move = match move with
-                | Normal dir -> Hungry(playerPos + dir :: rmOneTail body)
-                | Eat dir -> FedUp(playerPos + dir :: body)
-    Some move
+                | Normal playerNextPos -> Hungry(playerNextPos :: rmOneTail body)
+                | Eat playerNextPos -> FedUp(playerNextPos :: body)
+    Ok move
 
-let CheckInputExists (dir: Point) =
+let CheckInputExists (dir: Direction) =
     match dir with
-    | x when x = Point.Zero -> None
-    | _ -> Some dir
+    | x when x = Point.Zero -> Error NoInput
+    | _ -> Ok dir
 
-let CheckInsideField body (dir:Point) =
-    let playerPos = List.head body
-    let isInsideField = Drawer.field.Contains(playerPos + dir)
+let CalculateNextPos body (dir:Direction) : Result<Point,Fail>  =
+    Ok ((List.head body) + dir)
     
+let CheckInsideField (playerNextPos : Point) =
+    let isInsideField = Drawer.field.Contains(playerNextPos)
     match isInsideField with
-    | false -> None
-    | true -> Some dir
+    | false -> Error Outside
+    | true -> Ok playerNextPos
 
-let CreateMove body itemPos dir =
-    let itemEaten = List.head body + dir = itemPos
+let CheckHitOwnBody body (playerNextPos:Point)=
+    let hitBody = List.contains playerNextPos body 
+    match hitBody with
+    | true -> Error HitBody
+    | false -> Ok playerNextPos
 
-    match itemEaten with
-    | false -> Some(Normal dir)
-    | true -> Some(Eat dir)
+let CreateMove itemPos playerNextPos =
+    match playerNextPos = itemPos with
+    | true -> Ok(Eat playerNextPos)
+    | false -> Ok(Normal playerNextPos)
+    

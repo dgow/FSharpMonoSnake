@@ -19,5 +19,4 @@ type Body =
 type Fail =
     | NoInput
     | Outside
-
-type M = Result<Move, Fail>
+    | HitBody

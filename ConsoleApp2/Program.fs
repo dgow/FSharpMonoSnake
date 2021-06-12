@@ -65,12 +65,15 @@ let main _ =
                             |> GameLogic.MakeMove itemPos body
 
                         match movedBody with
-                            | Some (FedUp newBody) -> 
+                            | Ok (FedUp newBody) -> 
                                 return! gameLoop keyboardState (Item.createItem ()) newBody
-                            | Some (Hungry newBody)  ->
+                            | Ok (Hungry newBody)  ->
                                return! nextLoopWithMove newBody
-                            | None -> return! repeatLoop
-                            
+                            | Error NoInput -> return! repeatLoop
+                            | Error Outside ->
+                                printf "You are Outside! GAME OVER"
+                            | Error HitBody ->
+                                printf "Dont eat yourself! GAME OVER"
                     | Draw time ->
                         do game.GraphicsDevice.Clear Color.CornflowerBlue
                         spriteBatch.Begin()
