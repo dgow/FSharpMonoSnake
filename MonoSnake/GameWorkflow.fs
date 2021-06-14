@@ -23,7 +23,6 @@ let gameWorkflow (game : MyCrazyGame) =
             let rec gameLoop lastKeyBoardState itemPos body =
                 async {
                     let! nextState = game.LoopAsync
-                    
                     match nextState with
                     | Update data ->
                         let nextLoopWithBody = gameLoop data.keyboard itemPos
@@ -39,9 +38,9 @@ let gameWorkflow (game : MyCrazyGame) =
                                return! nextLoopWithBody newBody
                             | Error NoInput -> return! nextLoopWithBody body
                             | Error Outside ->
-                                printf "You are Outside! GAME OVER"
+                                printfn "You are Outside! GAME OVER"
                             | Error HitBody ->
-                                printf "Dont eat yourself! GAME OVER"
+                                printfn "Dont eat yourself! GAME OVER"
                                 
                     | Draw time ->
                         do game.GraphicsDevice.Clear Color.CornflowerBlue
@@ -56,7 +55,16 @@ let gameWorkflow (game : MyCrazyGame) =
                         return! gameLoop lastKeyBoardState itemPos body
                 }
 
-
-            return! gameLoop (Keyboard.GetState()) (Item.createItem ()) [ Point.Zero ]
+            let rec engineLoop x =
+                async {
+                    printfn "Start Round"
+                    return! gameLoop (Keyboard.GetState()) (Item.createItem ()) [ Point.Zero ]
+                    printfn "Round Finished"
+                    
+                    return! engineLoop x
+            }
+                
+            return! engineLoop 4
+            printfn "Exiting..."
         }
     
