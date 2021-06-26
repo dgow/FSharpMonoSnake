@@ -1,7 +1,5 @@
 module Input
 
-//#r "C:\\Users\\Johann\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\lib\\net452\\MonoGame.Framework.dll"
-
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
 
@@ -21,12 +19,6 @@ let DirectionFromKeyboard (keyState: KeyboardState) (lastState: KeyboardState) =
     |> Seq.filter (fun x -> keyState.IsKeyDown(x.Key))
     |> Seq.filter (fun x -> lastState.IsKeyUp(x.Key))
     |> Seq.sumBy (fun x -> x.Value)
-
-let ApplyMove body move =
-    let move = match move with
-                | Normal playerNextPos -> Hungry(playerNextPos :: rmOneTail body)
-                | Eat playerNextPos -> FedUp(playerNextPos :: body)
-    Ok move
 
 let CheckInputExists (dir: Direction) =
     match dir with
@@ -53,3 +45,8 @@ let CreateMove itemPos playerNextPos =
     | true -> Ok(Eat playerNextPos)
     | false -> Ok(Normal playerNextPos)
     
+let ApplyMove body move =
+    let move = match move with
+                | Normal playerNextPos -> Hungry(playerNextPos :: rmOneTail body)
+                | Eat playerNextPos -> FedUp(playerNextPos :: body)
+    Ok move
