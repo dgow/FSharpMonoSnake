@@ -1,4 +1,4 @@
-module Input
+module MonoSnake.Input
 
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
@@ -8,13 +8,13 @@ open Types
 let rmOneTail = List.rev >> List.tail >> List.rev
 
 let keyToVec =
-    [ Keys.Right, Point(1, 0)
-      Keys.Left, Point(-1, 0)
-      Keys.Up, Point(0, -1)
-      Keys.Down, Point(0, 1) ]
+    [ Keys.Right, Direction(1, 0)
+      Keys.Left, Direction(-1, 0)
+      Keys.Up, Direction(0, -1)
+      Keys.Down, Direction(0, 1) ]
     |> Map.ofList
 
-let DirectionFromKeyboard (keyState: KeyboardState) (lastState: KeyboardState) =
+let GetInput (keyState: KeyboardState) (lastState: KeyboardState) =
     keyToVec
     |> Seq.filter (fun x -> keyState.IsKeyDown(x.Key))
     |> Seq.filter (fun x -> lastState.IsKeyUp(x.Key))
@@ -26,10 +26,11 @@ let CheckInputExists (dir: Direction) =
     | _ -> Ok dir
 
 let CalculateNextPos body (dir:Direction) : Result<Point,Fail>  =
-    Ok ((List.head body) + dir)
+    let head = List.head body
+    Ok (head + dir)
     
 let CheckInsideField (playerNextPos : Point) =
-    let isInsideField = Drawer.field.Contains(playerNextPos)
+    let isInsideField = Types.field.Contains(playerNextPos)
     match isInsideField with
     | false -> Error Outside
     | true -> Ok playerNextPos

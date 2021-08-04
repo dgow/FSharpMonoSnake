@@ -2,6 +2,7 @@ module Engine
 
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
+open MonoSnake
 open Types
 
 type MyCrazyGame() as x =
@@ -10,6 +11,8 @@ type MyCrazyGame() as x =
     let initializeEvt = Event<_>()
     let loadEvt = Event<_>()
     let loopEvt = Event<_>()
+    
+    let mutable prevKeyboardState = KeyboardState()
 
     let graphics = new GraphicsDeviceManager(x)
     
@@ -18,15 +21,21 @@ type MyCrazyGame() as x =
         do base.Initialize()
 
     override x.LoadContent() =
-        graphics.PreferredBackBufferWidth <- Drawer.rectSize * Drawer.screenWidth
-        graphics.PreferredBackBufferHeight <- Drawer.rectSize * Drawer.screenHeight
+        graphics.PreferredBackBufferWidth <- Types.rectSize * Types.screenWidth
+        graphics.PreferredBackBufferHeight <- Types.rectSize * Types.screenHeight
         graphics.ApplyChanges()
         loadEvt.Trigger()
 
     override x.Update(gameTime) =
+        let keys = Keyboard.GetState()
+        let dir = MonoSnake.Input.GetInput keys prevKeyboardState
         let data = { time = gameTime
-                     keyboard = Keyboard.GetState() }
-        loopEvt.Trigger(Update data)
+                     dir = dir }
+        
+        if dir <> Point.Zero then
+            loopEvt.Trigger(Update data)
+            
+        prevKeyboardState <- keys
 
     override x.Draw(gameTime) = loopEvt.Trigger(Draw gameTime)
 

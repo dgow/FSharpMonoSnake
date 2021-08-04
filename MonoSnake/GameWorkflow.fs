@@ -1,70 +1,23 @@
 module GameWorkflow
 
-open Microsoft.Xna.Framework
-open Microsoft.Xna.Framework.Graphics
-open Microsoft.Xna.Framework.Input
-
+open ConsoleApp2
 open Engine
-open Types
-open Input
 
-let gameWorkflow (game : MyCrazyGame) =
+let gameWorkflow (game: MyCrazyGame) =
     async {
-            do! game.InitializeAsync
-            do! game.LoadContentAsync
+        do! game.InitializeAsync
+        do! game.LoadContentAsync
 
-            let spriteBatch = new SpriteBatch(game.GraphicsDevice)
-            let whitePixel = new Texture2D(game.GraphicsDevice, 1, 1)
-            whitePixel.SetData([| Color.Beige |])
+        let Render = Drawer.createRenderer game
 
-            let draw pos color =
-                Drawer.Draw spriteBatch whitePixel pos color
-
-            let rec gameLoop lastKeyBoardState itemPos body =
-                async {
-                    let! nextState = game.LoopAsync
-                    match nextState with
-                    | Update data ->
-                        let nextLoopWithBody = gameLoop data.keyboard itemPos
-                        
-                        let movedBody =
-                            DirectionFromKeyboard data.keyboard lastKeyBoardState
-                            |> GameLogic.MakeMove itemPos body
-
-                        match movedBody with
-                            | Ok (FedUp newBody) -> 
-                                return! gameLoop data.keyboard (Item.createItem ()) newBody
-                            | Ok (Hungry newBody)  ->
-                               return! nextLoopWithBody newBody
-                            | Error NoInput -> return! nextLoopWithBody body
-                            | Error Outside ->
-                                printfn "You are Outside! GAME OVER"
-                            | Error HitBody ->
-                                printfn "Dont eat yourself! GAME OVER"
-                                
-                    | Draw time ->
-                        do game.GraphicsDevice.Clear Color.CornflowerBlue
-                        spriteBatch.Begin()
-
-                        List.iter (fun x -> draw x Color.Bisque) (List.tail body)
-                        draw itemPos Color.Green
-                        draw (List.head body) Color.Pink
-
-                        spriteBatch.End()
-
-                        return! gameLoop lastKeyBoardState itemPos body
-                }
-
-            let rec engineLoop x =
-                async {
-                    printfn "Start Round"
-                    return! gameLoop (Keyboard.GetState()) (Item.createItem ()) [ Point.Zero ]
-                    printfn "Round Finished"
-                    
-                    return! engineLoop x
+        let rec engineLoop x =
+            async {
+                printfn $"Start Round %d{x}"
+                do! InGameLoop.startGameLoop game Render
+                printfn "Round Finished"
+                do! engineLoop (x + 1)
             }
-                
-            return! engineLoop 4
-            printfn "Exiting..."
-        }
-    
+
+        return! engineLoop 1
+        printfn "Exiting..."
+    }

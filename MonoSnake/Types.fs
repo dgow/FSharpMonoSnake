@@ -3,20 +3,28 @@ module Types
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
 
+let rectSize = 50
+let screenWidth = 12
+let screenHeight = 8
+let margin = 2
+
+let field = Rectangle(0,0, screenWidth, screenHeight)
+type Direction = Point
+
 type GameLoopData = {
     time:GameTime
-    keyboard:KeyboardState
+    dir:Direction
 }
+
 
 type LoopState =
     | Update of GameLoopData
     | Draw of GameTime
-
-type Direction = Point
+    | Input of Direction
 
 type Move =
-    | Normal of Direction
-    | Eat of Direction
+    | Normal of Point
+    | Eat of Point
 
 type Body =
     | Hungry of Point list

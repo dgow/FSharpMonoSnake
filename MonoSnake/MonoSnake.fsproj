@@ -8,16 +8,18 @@
 
     <ItemGroup>
         <Compile Include="Types.fs" />
-        <Compile Include="Drawer.fs" />
         <Compile Include="Input.fs" />
+        <Compile Include="Engine.fs" />
         <Compile Include="Item.fs" />
         <Compile Include="GameLogic.fs" />
-        <Compile Include="Engine.fs" />
+        <Compile Include="Drawer.fs" />
+        <Compile Include="InGameLoop.fs" />
         <Compile Include="GameWorkflow.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="log4net" Version="2.0.12" />
       <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
       <PackageReference Include="MQTTnet" Version="3.0.15" />
     </ItemGroup>
