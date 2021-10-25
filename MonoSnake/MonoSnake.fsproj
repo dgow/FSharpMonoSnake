@@ -14,6 +14,7 @@
         <Compile Include="GameLogic.fs" />
         <Compile Include="Drawer.fs" />
         <Compile Include="InGameLoop.fs" />
+        <Compile Include="SplashScreen.fs" />
         <Compile Include="GameWorkflow.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>

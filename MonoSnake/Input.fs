@@ -25,29 +25,30 @@ let CheckInputExists (dir: Direction) =
     | x when x = Point.Zero -> Error NoInput
     | _ -> Ok dir
 
-let CalculateNextPos body (dir:Direction) : Result<Point,Fail>  =
+let CalculateNextPos body (dir: Direction) : Result<Point, Fail> =
     let head = List.head body
-    Ok (head + dir)
-    
-let CheckInsideField (playerNextPos : Point) =
-    let isInsideField = Types.field.Contains(playerNextPos)
-    match isInsideField with
-    | false -> Error Outside
-    | true -> Ok playerNextPos
+    Ok(head + dir)
 
-let CheckHitOwnBody body (playerNextPos:Point)=
-    let hitBody = List.contains playerNextPos (rmOneTail body) 
-    match hitBody with
-    | true -> Error HitBody
-    | false -> Ok playerNextPos
+let CheckInsideField (playerNextPos: Point) =
+    match field.Contains(playerNextPos) with
+    | true -> Ok playerNextPos
+    | false -> Error Outside
+
+let CheckHitOwnBody body (playerNextPos: Point) =
+    rmOneTail body
+    |> List.contains playerNextPos
+    |> function
+        | false -> Ok playerNextPos
+        | true -> Error HitBody
 
 let CreateMove itemPos playerNextPos =
     match playerNextPos = itemPos with
     | true -> Ok(Eat playerNextPos)
     | false -> Ok(Normal playerNextPos)
-    
+
 let ApplyMove body move =
-    let move = match move with
-                | Normal playerNextPos -> Hungry(playerNextPos :: rmOneTail body)
-                | Eat playerNextPos -> FedUp(playerNextPos :: body)
+    let move =
+        match move with
+        | Normal playerNextPos -> Hungry(playerNextPos :: rmOneTail body)
+        | Eat playerNextPos -> FedUp(playerNextPos :: body)
     Ok move

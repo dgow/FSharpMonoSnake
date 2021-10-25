@@ -11,3 +11,4 @@ let MakeMove itemPos body direction =
     >>= Input.CheckHitOwnBody body
     >>= Input.CreateMove itemPos
     >>= Input.ApplyMove body
+    

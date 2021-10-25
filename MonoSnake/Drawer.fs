@@ -12,7 +12,7 @@ let DrawPixel (sprite: SpriteBatch) (pixel: Texture2D) (pos: Point) color =
         color
     )
     
-let Render draw itemPos body =
+let RenderGame draw itemPos body =
     List.iter (fun x -> draw x Color.Bisque) (List.tail body)
     draw itemPos Color.Green
     draw (List.head body) Color.Pink
@@ -26,10 +26,21 @@ let createRenderer (game: MyCrazyGame) =
     let draw pos color =
         DrawPixel spriteBatch whitePixel pos color
 
-    let Render itemPos body =
+    let Renderer itemPos body =
         game.GraphicsDevice.Clear Color.CornflowerBlue
         spriteBatch.Begin()
-        Render draw itemPos body
+        RenderGame draw itemPos body
         spriteBatch.End()
-
-    Render
+    Renderer
+    
+let createSplashDrawer (game: MyCrazyGame) =
+    let spriteBatch = new SpriteBatch(game.GraphicsDevice)
+    let font = game.Content.Load<SpriteFont>("Main");
+    
+    let Renderer (text: string) =
+        game.GraphicsDevice.Clear Color.Bisque
+        spriteBatch.Begin()
+        spriteBatch.DrawString(font, text,Vector2(100f,100f), Color.Blue)
+        spriteBatch.End()
+    Renderer
+    

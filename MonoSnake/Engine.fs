@@ -2,7 +2,6 @@ module Engine
 
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
-open MonoSnake
 open Types
 
 type MyCrazyGame() as x =
@@ -21,6 +20,7 @@ type MyCrazyGame() as x =
         do base.Initialize()
 
     override x.LoadContent() =
+        x.Content.RootDirectory <- "Content";
         graphics.PreferredBackBufferWidth <- Types.rectSize * Types.screenWidth
         graphics.PreferredBackBufferHeight <- Types.rectSize * Types.screenHeight
         graphics.ApplyChanges()
